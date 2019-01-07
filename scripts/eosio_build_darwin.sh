@@ -235,48 +235,6 @@ else
 	printf " - MongoDB found with correct version @ ${MONGODB_ROOT}.\\n"
 fi
 
-
-printf "\\n"
-
-printf "Checking LLVM with WASM support...\\n"
-if [ ! -d $LLVM_ROOT ]; then
-	printf "Installing LLVM with WASM...\\n"
-	curl -OL http://releases.llvm.org/$LLVM_VERSION/llvm-$LLVM_VERSION.src.tar.xz && tar -xvf llvm-$LLVM_VERSION.src.tar.xz && rm -f llvm-$LLVM_VERSION.src.tar.xz \
-	&& cd llvm-$LLVM_VERSION.src/projects && wget https://releases.llvm.org/$LLVM_VERSION/libcxx-$LLVM_VERSION.src.tar.xz && tar -xvf libcxx-$LLVM_VERSION.src.tar.xz && mv libcxx-4.0.1.src lld && rm -f libcxx-$LLVM_VERSION.src.tar.xz \
-	&& wget https://releases.llvm.org/$LLVM_VERSION/compiler-rt-$LLVM_VERSION.src.tar.xz && tar -xvf compiler-rt-$LLVM_VERSION.src.tar.xz && mv compiler-rt-4.0.1.src lld && rm -f compiler-rt-$LLVM_VERSION.src.tar.xz && cd .. \
-	&& mkdir build \
-	&& cd build \
-	&& cmake -G "Unix Makefiles" -DLLVM_ENABLE_LIBCXX=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INSTALL_UTILS=ON -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DCMAKE_INSTALL_PREFIX=$HOME .. \
-	&& make -j"${JOBS}" \
-	&& make install \
-	&& cd ../.. \
-	|| exit 1
-	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
-else
-	printf " - WASM found @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
-fi
-
-
-# printf "Checking LLVM with WASM support...\\n"
-# if [ ! -d $LLVM_ROOT ]; then
-# 	printf "Installing LLVM with WASM...\\n"
-# 	git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/llvm.git llvm-$LLVM_VERSION \
-# 	&& cd llvm-$LLVM_VERSION \
-# 	&& mkdir build \
-# 	&& cd build \
-# 	&& cmake -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD=all .. \
-# 	&& make -j"${CPU_CORE}" \
-# 	&& make install \
-# 	&& cd ../.. \
-# 	&& rm -rf $WASM_LINK_LOCATION \
-# 	&& ln -s $LLVM_ROOT $WASM_LINK_LOCATION \
-# 	|| exit 1
-# 	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
-# else
-# 	printf " - WASM found @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
-# fi
-
-
 cd ..
 printf "\\n"
 
