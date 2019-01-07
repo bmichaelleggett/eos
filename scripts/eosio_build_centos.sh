@@ -280,7 +280,8 @@ printf "\\n"
 printf "Checking LLVM with WASM support...\\n"
 if [ ! -d $LLVM_ROOT ]; then
 	printf "Installing LLVM with WASM...\\n"
-	git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/llvm.git llvm && cd llvm \
+	cd ../opt \
+	&& git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/llvm.git llvm && cd llvm \
 	&& mkdir build \
 	&& cd build \
 	&& cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=.. -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="WebAssembly" -DLLVM_ENABLE_RTTI=1 -DCMAKE_BUILD_TYPE="Release" .. \
