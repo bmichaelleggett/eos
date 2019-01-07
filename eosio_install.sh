@@ -116,7 +116,7 @@ printf "(_______/(_______)\_______)\_______/(_______)\n\n"
 
 printf "==============================================================================================\\n"
 printf "Please execute (and append to .bash_profile) the following:\\n"
-printf "${bldred}${txtbld}export LD_LIBRARY_PATH=\"/lib:/usr/lib:/usr/local/lib:${LIB_LOCATION}\"\\n"
+printf "${bldred}${txtbld}export LD_LIBRARY_PATH=\"${LIB_LOCATION}:$\LD_LIBRARY_PATH\"\\n"
 printf "export PATH=$BIN_LOCATION:\$PATH${txtrst}\\n"
 printf "==============================================================================================\\n\\n"
 

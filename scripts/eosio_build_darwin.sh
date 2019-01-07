@@ -178,6 +178,23 @@ fi
 
 printf "\\n"
 
+printf "Checking CMAKE installation...\\n"
+CMAKE=$(command -v cmake 2>/dev/null)
+if [ -z $CMAKE ]; then
+	printf "Installing CMAKE...\\n"
+	curl -LO https://cmake.org/files/v$CMAKE_VERSION_MAJOR.$CMAKE_VERSION_MINOR/cmake-$CMAKE_VERSION.tar.gz \
+	&& tar xf cmake-$CMAKE_VERSION.tar.gz \
+	&& cd cmake-$CMAKE_VERSION \
+	&& ./bootstrap --prefix=$HOME \
+	&& make -j"${JOBS}" \
+	&& make install \
+	&& cd .. \
+	&& rm -f cmake-$CMAKE_VERSION.tar.gz \
+	|| exit 1
+	printf " - CMAKE successfully installed @ ${HOME}/bin/cmake \\n"
+else
+	printf " - CMAKE found @ ${CMAKE}.\\n"
+fi
 
 printf "Checking Boost library (${BOOST_VERSION}) installation...\\n"
 if [ ! -d $BOOST_ROOT ]; then
@@ -224,16 +241,14 @@ printf "\\n"
 printf "Checking LLVM with WASM support...\\n"
 if [ ! -d $LLVM_ROOT ]; then
 	printf "Installing LLVM with WASM...\\n"
-	curl -OL http://releases.llvm.org/$LLVM_VERSION/llvm-$LLVM_VERSION.src.tar.xz \
-	&& tar -xvf llvm-$LLVM_VERSION.src.tar.xz \
-	&& cd llvm-$LLVM_VERSION.src \
+	curl -OL http://releases.llvm.org/$LLVM_VERSION/llvm-$LLVM_VERSION.src.tar.xz && tar -xvf llvm-$LLVM_VERSION.src.tar.xz && rm -f llvm-$LLVM_VERSION.src.tar.xz \
+	&& cd llvm-$LLVM_VERSION.src/projects && wget https://releases.llvm.org/$LLVM_VERSION/libcxx-$LLVM_VERSION.src.tar.xz && tar -xvf libcxx-$LLVM_VERSION.src.tar.xz && mv libcxx-4.0.1.src lld && rm -f libcxx-$LLVM_VERSION.src.tar.xz \
+	&& wget https://releases.llvm.org/$LLVM_VERSION/compiler-rt-$LLVM_VERSION.src.tar.xz && tar -xvf compiler-rt-$LLVM_VERSION.src.tar.xz && mv compiler-rt-4.0.1.src lld && rm -f compiler-rt-$LLVM_VERSION.src.tar.xz && cd .. \
 	&& mkdir build \
 	&& cd build \
-	&& cmake -G "Unix Makefiles" .. -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_ENABLE_EH=ON -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_LIBCXX=OFF -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INSTALL_UTILS=ON -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_TARGETS_TO_BUILD=all -DCMAKE_INSTALL_PREFIX=$HOME \
+	&& cmake -G "Unix Makefiles" -DLLVM_ENABLE_LIBCXX=ON -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INSTALL_UTILS=ON -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DCMAKE_INSTALL_PREFIX=$HOME .. \
 	&& make -j"${JOBS}" \
 	&& make install \
-	&& rm -f $WASM_LINK_LOCATION \
-	&& ln -s $LLVM_ROOT $WASM_LINK_LOCATION \
 	&& cd ../.. \
 	|| exit 1
 	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
