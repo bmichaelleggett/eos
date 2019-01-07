@@ -235,6 +235,19 @@ else
 	printf " - MongoDB found with correct version @ ${MONGODB_ROOT}.\\n"
 fi
 
+
+printf "\\n"
+
+# LLVM on mac is complicated to install from source, so we use brew's llvm@4
+if [ ! -d $LLVM_ROOT ]; then
+	ln -s /usr/local/opt/llvm@4 $LLVM_ROOT \
+	|| exit 1
+	printf " - Symlinked ${LLVM_ROOT} -> /usr/local/opt/llvm@4.\\n"
+else
+	printf " - WASM found @ ${LLVM_ROOT} (brew installed into /usr/local/opt/llvm@4).\\n"
+fi
+
+
 cd ..
 printf "\\n"
 

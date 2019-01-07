@@ -70,9 +70,8 @@ export BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSI
 export BOOST_ROOT=${SRC_LOCATION}/boost_${BOOST_VERSION}
 export BOOST_LINK_LOCATION=${OPT_LOCATION}/boost
 export LLVM_VERSION=release_40
-export LLVM_ROOT=$SRC_LOCATION/llvm
+export LLVM_ROOT=$OPT_LOCATION/llvm
 export LLVM_DIR=$LLVM_ROOT/lib/cmake/llvm
-export WASM_LINK_LOCATION=$OPT_LOCATION/wasm
 export TINI_VERSION=0.18.0
 export PATH=$MONGODB_LINK_LOCATION/bin:$PATH
 
@@ -267,7 +266,6 @@ printf "\\n=====================================================================
 printf "======================= Starting EOSIO Build =======================\\n"
 printf "## CMAKE_BUILD_TYPE=%s\\n" "${CMAKE_BUILD_TYPE}"
 printf "## ENABLE_COVERAGE_TESTING=%s\\n" "${ENABLE_COVERAGE_TESTING}"
-printf "## DOXYGEN=%s\\n\\n" "${DOXYGEN}"
 
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR &> /dev/null
