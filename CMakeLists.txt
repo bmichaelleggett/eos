@@ -7,8 +7,8 @@ enable_testing()
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
    message(WARNING "CMAKE_INSTALL_PREFIX is set to default path of ${CMAKE_INSTALL_PREFIX}, resetting to ${CMAKE_INSTALL_PREFIX}/eosio")
    set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/eosio")
-elseif ("${CMAKE_INSTALL_PREFIX}" STREQUAL "$ENV{HOME}")
-   message(WARNING "CMAKE_INSTALL_PREFIX is explicitly set to $ENV{HOME}. This is not recommended.")
+elseif ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local")
+   message(WARNING "CMAKE_INSTALL_PREFIX is explicitly set to /usr/local. This is not recommended.")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/libraries/fc/CMakeModules")
@@ -17,7 +17,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 if (UNIX)
    if (APPLE)
       if (LLVM_DIR STREQUAL "" OR NOT LLVM_DIR)
-         set(LLVM_DIR "$ENV{HOME}/opt/wasm/lib/cmake/llvm")
+         set(LLVM_DIR "$ENV{HOME}/lib/cmake/llvm")
       endif()
    endif()
 endif()
@@ -34,8 +34,9 @@ set( CMAKE_CXX_EXTENSIONS ON )
 set( CXX_STANDARD_REQUIRED ON)
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 5)
-set(VERSION_PATCH 2)
+set(VERSION_MINOR 7)
+set(VERSION_PATCH 0)
+set(VERSION_SUFFIX develop)
 
 if(VERSION_SUFFIX)
     set(VERSION_FULL "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}-${VERSION_SUFFIX}")
@@ -206,7 +207,6 @@ if(ENABLE_COVERAGE_TESTING)
 endif()
 
 include(utils)
-add_subdirectory( externals )
 
 if ("${CORE_SYMBOL_NAME}" STREQUAL "")
   set( CORE_SYMBOL_NAME "SYS" )
@@ -226,7 +226,6 @@ endif()
 
 message( STATUS "Using '${EOSIO_ROOT_KEY}' as public key for 'eosio' account" )
 
-include(wasm)
 add_subdirectory( libraries )
 add_subdirectory( plugins )
 add_subdirectory( programs )
@@ -268,15 +267,12 @@ configure_file(${CMAKE_SOURCE_DIR}/libraries/fc/secp256k1/upstream/COPYING
                ${CMAKE_BINARY_DIR}/licenses/eosio/LICENSE.secp256k1 COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/libraries/fc/src/network/LICENSE.go 
                ${CMAKE_BINARY_DIR}/licenses/eosio/LICENSE.go COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/externals/binaryen/LICENSE 
-               ${CMAKE_BINARY_DIR}/licenses/eosio/LICENSE.binaryen COPYONLY)
 
 install(FILES LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/)
 install(FILES libraries/wabt/LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ RENAME LICENSE.wabt)
 install(FILES libraries/softfloat/COPYING.txt DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ RENAME LICENSE.softfloat)
 install(FILES libraries/wasm-jit/LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ RENAME LICENSE.wavm)
 install(FILES libraries/fc/secp256k1/upstream/COPYING DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ RENAME LICENSE.secp256k1)
-install(FILES externals/binaryen/LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ RENAME LICENSE.binaryen)
 install(FILES libraries/fc/src/network/LICENSE.go DESTINATION ${CMAKE_INSTALL_FULL_DATAROOTDIR}/licenses/eosio/ )
 
 include(package)
