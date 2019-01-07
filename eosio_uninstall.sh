@@ -23,16 +23,18 @@ if [ -d $OPT_LOCATION/eosio ]; then
             fi
 
             pushd $HOME &> /dev/null
+            pushd opt &> /dev/null
             rm -rf eosio
-            pushd bin &> /dev/null
-            for binary in ${binaries[@]}; do
-               rm ${binary}
-            done
             # Handle cleanup of directories created from installation
             if [ "$1" == "--full" ]; then
                if [ -d ~/Library/Application\ Support/eosio ]; then rm -rf ~/Library/Application\ Support/eosio; fi # Mac OS
                if [ -d ~/.local/share/eosio ]; then rm -rf ~/.local/share/eosio; fi # Linux
             fi
+            popd &> /dev/null
+            pushd bin &> /dev/null
+            for binary in ${binaries[@]}; do
+               rm ${binary}
+            done
             popd &> /dev/null
             break;;
          [Nn]* )

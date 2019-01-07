@@ -215,11 +215,11 @@ printf "\\n"
 
 
 printf "Checking LLVM with WASM support...\\n"
-if [ ! -d $LLVM_CLANG_ROOT ]; then
+if [ ! -d $LLVM_ROOT ]; then
 	printf "Installing LLVM with WASM...\\n"
-	git clone --depth 1 --single-branch --branch $LLVM_CLANG_VERSION https://github.com/llvm-mirror/llvm.git llvm-$LLVM_CLANG_VERSION \
-	&& cd llvm-$LLVM_CLANG_VERSION/tools \
-	&& git clone --depth 1 --single-branch --branch $LLVM_CLANG_VERSION https://github.com/llvm-mirror/clang.git clang-$LLVM_CLANG_VERSION \
+	git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/llvm.git llvm-$LLVM_VERSION \
+	&& cd llvm-$LLVM_VERSION/tools \
+	&& git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/clang.git clang-$LLVM_VERSION \
 	&& cd .. \
 	&& mkdir build \
 	&& cd build \
@@ -228,11 +228,11 @@ if [ ! -d $LLVM_CLANG_ROOT ]; then
 	&& make install \
 	&& cd ../.. \
 	&& rm -rf $WASM_LINK_LOCATION \
-	&& ln -s $LLVM_CLANG_ROOT $WASM_LINK_LOCATION \
+	&& ln -s $LLVM_ROOT $WASM_LINK_LOCATION \
 	|| exit 1
-	printf "WASM compiler successfully installed @ ${LLVM_CLANG_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
+	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
 else
-	printf " - WASM found @ ${LLVM_CLANG_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
+	printf " - WASM found @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
 fi
 
 

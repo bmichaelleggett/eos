@@ -221,27 +221,45 @@ fi
 
 printf "\\n"
 
-
 printf "Checking LLVM with WASM support...\\n"
-if [ ! -d $LLVM_CLANG_ROOT ]; then
+if [ ! -d $LLVM_ROOT ]; then
 	printf "Installing LLVM with WASM...\\n"
-	git clone --depth 1 --single-branch --branch $LLVM_CLANG_VERSION https://github.com/llvm-mirror/llvm.git llvm-$LLVM_CLANG_VERSION \
-	&& cd llvm-$LLVM_CLANG_VERSION/tools \
-	&& git clone --depth 1 --single-branch --branch $LLVM_CLANG_VERSION https://github.com/llvm-mirror/clang.git clang-$LLVM_CLANG_VERSION \
-	&& cd .. \
+	curl -OL http://releases.llvm.org/$LLVM_VERSION/llvm-$LLVM_VERSION.src.tar.xz \
+	&& tar -xvf llvm-$LLVM_VERSION.src.tar.xz \
+	&& cd llvm-$LLVM_VERSION.src \
 	&& mkdir build \
 	&& cd build \
-	&& cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=.. -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DLLVM_ENABLE_RTTI=1 -DCMAKE_BUILD_TYPE=Release .. \
-	&& make -j"${CPU_CORE}" \
+	&& cmake -G "Unix Makefiles" .. -DLLVM_BUILD_EXTERNAL_COMPILER_RT=ON -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_ENABLE_EH=ON -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_LIBCXX=OFF -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_DOCS=OFF -DLLVM_INSTALL_UTILS=ON -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_TARGETS_TO_BUILD=all -DCMAKE_INSTALL_PREFIX=$HOME \
+	&& make -j"${JOBS}" \
 	&& make install \
+	&& rm -f $WASM_LINK_LOCATION \
+	&& ln -s $LLVM_ROOT $WASM_LINK_LOCATION \
 	&& cd ../.. \
-	&& rm -rf $WASM_LINK_LOCATION \
-	&& ln -s $LLVM_CLANG_ROOT $WASM_LINK_LOCATION \
 	|| exit 1
-	printf "WASM compiler successfully installed @ ${LLVM_CLANG_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
+	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
 else
-	printf " - WASM found @ ${LLVM_CLANG_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
+	printf " - WASM found @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
 fi
+
+
+# printf "Checking LLVM with WASM support...\\n"
+# if [ ! -d $LLVM_ROOT ]; then
+# 	printf "Installing LLVM with WASM...\\n"
+# 	git clone --depth 1 --single-branch --branch $LLVM_VERSION https://github.com/llvm-mirror/llvm.git llvm-$LLVM_VERSION \
+# 	&& cd llvm-$LLVM_VERSION \
+# 	&& mkdir build \
+# 	&& cd build \
+# 	&& cmake -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD=all .. \
+# 	&& make -j"${CPU_CORE}" \
+# 	&& make install \
+# 	&& cd ../.. \
+# 	&& rm -rf $WASM_LINK_LOCATION \
+# 	&& ln -s $LLVM_ROOT $WASM_LINK_LOCATION \
+# 	|| exit 1
+# 	printf "WASM compiler successfully installed @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION})\\n"
+# else
+# 	printf " - WASM found @ ${LLVM_ROOT} (Symlinked to ${WASM_LINK_LOCATION}).\\n"
+# fi
 
 
 cd ..

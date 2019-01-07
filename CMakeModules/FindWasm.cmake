@@ -3,7 +3,7 @@
 # TODO: Check if compiler is able to generate wasm32
 if ("${WASM_ROOT}" STREQUAL "")
    if (UNIX OR APPLE)
-      set( WASM_ROOT "$ENV{HOME}/opt/wasm" )
+      set( WASM_ROOT "$ENV{HOME}" )
    else()
       message(FATAL_ERROR "WASM not found and don't know where to look, please specify WASM_ROOT")
    endif()

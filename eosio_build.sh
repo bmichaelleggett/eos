@@ -69,12 +69,12 @@ export BOOST_VERSION_PATCH=0
 export BOOST_VERSION=${BOOST_VERSION_MAJOR}_${BOOST_VERSION_MINOR}_${BOOST_VERSION_PATCH}
 export BOOST_ROOT=${SRC_LOCATION}/boost_${BOOST_VERSION}
 export BOOST_LINK_LOCATION=${OPT_LOCATION}/boost
-export LLVM_CLANG_VERSION=release_40
-export LLVM_CLANG_ROOT=${SRC_LOCATION}/llvm-${LLVM_CLANG_VERSION}
-export LLVM_DIR=${LLVM_CLANG_ROOT}/lib/cmake/llvm
-export WASM_LINK_LOCATION=${OPT_LOCATION}/wasm
+export LLVM_VERSION=4.0.1
+export LLVM_ROOT=$SRC_LOCATION/llvm-$LLVM_VERSION.src
+export LLVM_DIR=$LLVM_ROOT/lib/cmake/llvm
+export WASM_LINK_LOCATION=$OPT_LOCATION/wasm
 export TINI_VERSION=0.18.0
-export PATH=${MONGODB_LINK_LOCATION}/bin:${PATH}
+export PATH=$MONGODB_LINK_LOCATION/bin:$PATH
 
 # Setup directories
 mkdir -p $SRC_LOCATION
@@ -277,13 +277,12 @@ if [ -z "${CMAKE}" ]; then
 fi
 
 $CMAKE -DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" -DCMAKE_CXX_COMPILER="${CXX_COMPILER}" \
-   -DCMAKE_C_COMPILER="${C_COMPILER}" -DWASM_ROOT="${WASM_ROOT}" -DCORE_SYMBOL_NAME="${CORE_SYMBOL_NAME}" \
+   -DCMAKE_C_COMPILER="${C_COMPILER}" -DWASM_ROOT="${HOME}" -DCORE_SYMBOL_NAME="${CORE_SYMBOL_NAME}" \
    -DOPENSSL_ROOT_DIR="${OPENSSL_ROOT_DIR}" -DBUILD_MONGO_DB_PLUGIN=true \
    -DENABLE_COVERAGE_TESTING="${ENABLE_COVERAGE_TESTING}" -DBUILD_DOXYGEN="${DOXYGEN}" \
    -DCMAKE_INSTALL_PREFIX=$OPT_LOCATION/eosio ${LOCAL_CMAKE_FLAGS} "${CURRENT_DIR}"
 if [ $? -ne 0 ]; then exit -1; fi
-echo "CORES available for make -j: ${JOBS}"
-make -j$JOBS
+make -j"${JOBS}"
 if [ $? -ne 0 ]; then exit -1; fi
 popd &> /dev/null
 
@@ -310,3 +309,4 @@ printf "EOSIO Telegram channel @ https://t.me/EOSProject\\n"
 printf "EOSIO resources: https://eos.io/resources/\\n"
 printf "EOSIO Stack Exchange: https://eosio.stackexchange.com\\n"
 printf "EOSIO wiki: https://github.com/EOSIO/eos/wiki\\n\\n\\n"
+
